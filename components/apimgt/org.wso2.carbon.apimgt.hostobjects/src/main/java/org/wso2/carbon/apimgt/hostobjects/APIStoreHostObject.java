@@ -3416,6 +3416,7 @@ public class APIStoreHostObject extends ScriptableObject {
 
     public static boolean jsFunction_updateApplication(Context cx, Scriptable thisObj, Object[] args, Function funObj)
             throws ScriptException, APIManagementException {
+    	log.info("//TODO++++++++++++updateApplication INFO");
         if (args != null && args.length > 5 && isStringArray(args)) {
             String newName = (String) args[0];
             String oldName = (String) args[1];
@@ -3452,6 +3453,23 @@ public class APIStoreHostObject extends ScriptableObject {
             updatedApplication.setCallbackUrl(callbackUrl);
             updatedApplication.setDescription(description);
             apiConsumer.updateApplication(updatedApplication);
+            
+            //get the log line with updated details of the application
+            String updatedLogEntry = "+++++Application Updated by - " + username;
+            if (!newName.equals(oldName)) {
+            	updatedLogEntry += " | Name - " + oldName + " > " + newName;
+            }
+            if (!application.getTier().equals(tier)) {
+            	updatedLogEntry += " | Tier - " + application.getTier() + " > " + tier;
+            }
+            if (!application.getCallbackUrl().equals(callbackUrl)) {
+            	updatedLogEntry += " | Callback Url - " + application.getCallbackUrl() + " > " + callbackUrl;
+            }
+            if (!application.getDescription().equals(description)) {
+            	updatedLogEntry += " | Description - " + application.getDescription() + " > " + description;
+            }
+        	log.info(updatedLogEntry);
+        	
             return true;
         }
 
