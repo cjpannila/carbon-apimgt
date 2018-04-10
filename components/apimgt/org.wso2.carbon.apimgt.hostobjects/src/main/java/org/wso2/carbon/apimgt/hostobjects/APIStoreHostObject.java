@@ -2404,15 +2404,31 @@ public class APIStoreHostObject extends ScriptableObject {
                 PrivilegedCarbonContext.endTenantFlow();
             }
         }
-         return addSubscriptionResponse;
+        
+        //get the log line for adding subscription to the application
+        String logEntry = "//DONE1+++++Added Subscription by - " + userId;
+        logEntry += " | App Id - " + applicationId;
+        try {
+            Application application = apiConsumer.getApplicationById(applicationId);
+            String applicationName = application.getName();
+            logEntry += " | App Name - " + applicationName;
+        } catch (APIManagementException e) {
+        	handleException("Error while getting application for id : " + applicationId + ". Reason: " + e.getMessage(), e);
+        }
+        logEntry += " | API - " + apiName + "-" + version;
+    	log.info(logEntry);
+        
+        return addSubscriptionResponse;
     }
 
     public static SubscriptionResponse jsFunction_addAPISubscription(Context cx, Scriptable thisObj,
                                                                      Object[] args, Function funObj)
             throws APIManagementException {
+    	log.info("//DONE+++++++++++jsFunction_addAPISubscription");
         if (!isStringArray(args)) {
             throw new APIManagementException("Invalid input parameters for AddAPISubscription method");
         }
+    	log.info("//DONE+++++++++++jsFunction_addAPISubscription");
 
         APIConsumer apiConsumer = getAPIConsumer(thisObj);
         SubscriptionResponse addSubscriptionResponse  = null;
@@ -2722,7 +2738,6 @@ public class APIStoreHostObject extends ScriptableObject {
     public static NativeObject getAllSubscriptions(Context cx, Scriptable thisObj, Object[] args, Function funObj,
                                                    boolean isFirstOnly)
             throws ScriptException, APIManagementException, ApplicationNotFoundException {
-
         if (args == null || args.length == 0 || !isStringArray(args)) {
             return null;
         }
@@ -3355,7 +3370,12 @@ public class APIStoreHostObject extends ScriptableObject {
             } else {
                 handleException("Application " + name + " doesn't exists");
             }
-
+            
+            //get the log line with deleted application details
+            String logEntry = "//DONE+++++Application Deleted by - " + username;
+            logEntry += " | App Name - " + name;
+        	log.info(logEntry);
+        	
             return true;
         }
         return false;
@@ -3416,7 +3436,6 @@ public class APIStoreHostObject extends ScriptableObject {
 
     public static boolean jsFunction_updateApplication(Context cx, Scriptable thisObj, Object[] args, Function funObj)
             throws ScriptException, APIManagementException {
-    	log.info("//TODO++++++++++++updateApplication INFO");
         if (args != null && args.length > 5 && isStringArray(args)) {
             String newName = (String) args[0];
             String oldName = (String) args[1];
@@ -3455,20 +3474,20 @@ public class APIStoreHostObject extends ScriptableObject {
             apiConsumer.updateApplication(updatedApplication);
             
             //get the log line with updated details of the application
-            String updatedLogEntry = "+++++Application Updated by - " + username;
+            String logEntry = "//DONE+++++Application Updated by - " + username;
             if (!newName.equals(oldName)) {
-            	updatedLogEntry += " | Name - " + oldName + " > " + newName;
+            	logEntry += " | App Name - " + oldName + " > " + newName;
             }
             if (!application.getTier().equals(tier)) {
-            	updatedLogEntry += " | Tier - " + application.getTier() + " > " + tier;
+            	logEntry += " | Tier - " + application.getTier() + " > " + tier;
             }
             if (!application.getCallbackUrl().equals(callbackUrl)) {
-            	updatedLogEntry += " | Callback Url - " + application.getCallbackUrl() + " > " + callbackUrl;
+            	logEntry += " | Callback Url - " + application.getCallbackUrl() + " > " + callbackUrl;
             }
             if (!application.getDescription().equals(description)) {
-            	updatedLogEntry += " | Description - " + application.getDescription() + " > " + description;
+            	logEntry += " | Description - " + application.getDescription() + " > " + description;
             }
-        	log.info(updatedLogEntry);
+        	log.info(logEntry);
         	
             return true;
         }
@@ -3556,8 +3575,17 @@ public class APIStoreHostObject extends ScriptableObject {
             }
             for (Application app : apps) {
                 if (app.getName().equals(name)) {
+                    String oldTier = app.getTier();
+                    
                     app.setTier(tier);
                     apiConsumer.updateApplication(app);
+
+                    //get the log line with updated details of the application
+                    String logEntry = "//DONE+++++Application Updated by - " + username;
+                    logEntry += " | App Name - " + name;
+                    logEntry += " | Tier - " + oldTier + " > " + tier;
+                	log.info(logEntry);
+                	
                     return true;
                 }
             }
@@ -3999,6 +4027,7 @@ public class APIStoreHostObject extends ScriptableObject {
     public static boolean jsFunction_removeSubscription(Context cx, Scriptable thisObj,
                                                         Object[] args, Function funObj)
             throws APIManagementException {
+    	log.info("//DONE+++++++++++jsFunction_removeSubscription");
         if (args == null || args.length == 0) {
             handleException("Invalid number of input parameters.");
         }
@@ -4021,6 +4050,20 @@ public class APIStoreHostObject extends ScriptableObject {
                 PrivilegedCarbonContext.getThreadLocalCarbonContext().setTenantDomain(tenantDomain, true);
             }
             apiConsumer.removeSubscription(apiId, username, applicationId);
+            
+            //get the log line for removing subscription to the application
+            String logEntry = "//DONE1+++++Subscription Removed by - " + username;
+            logEntry += " | App Id - " + applicationId;
+            try {
+                Application application = apiConsumer.getApplicationById(applicationId);
+                String applicationName = application.getName();
+                logEntry += " | App Name - " + applicationName;
+            } catch (APIManagementException e) {
+            	handleException("Error while getting application for id : " + applicationId + ". Reason: " + e.getMessage(), e);
+            }
+            logEntry += " | API - " + name + "-" + version;
+        	log.info(logEntry);
+        	
             return true;
         } catch (APIManagementException e) {
             handleException("Error while removing the subscription of" + name + "-" + version, e);
