@@ -4027,7 +4027,6 @@ public class APIStoreHostObject extends ScriptableObject {
     public static boolean jsFunction_removeSubscription(Context cx, Scriptable thisObj,
                                                         Object[] args, Function funObj)
             throws APIManagementException {
-    	log.info("//DONE+++++++++++jsFunction_removeSubscription");
         if (args == null || args.length == 0) {
             handleException("Invalid number of input parameters.");
         }
@@ -4052,7 +4051,7 @@ public class APIStoreHostObject extends ScriptableObject {
             apiConsumer.removeSubscription(apiId, username, applicationId);
             
             //get the log line for removing subscription to the application
-            String logEntry = "//DONE1+++++Subscription Removed by - " + username;
+            String logEntry = "//DONE+++++Subscription Removed by - " + username;
             logEntry += " | App Id - " + applicationId;
             try {
                 Application application = apiConsumer.getApplicationById(applicationId);
