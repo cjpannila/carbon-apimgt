@@ -2406,7 +2406,7 @@ public class APIStoreHostObject extends ScriptableObject {
         }
         
         //get the log line for adding subscription to the application
-        String logEntry = "//DONE1+++++Added Subscription by - " + userId;
+        String logEntry = "Subscription Added by - " + userId;
         logEntry += " | App Id - " + applicationId;
         try {
             Application application = apiConsumer.getApplicationById(applicationId);
@@ -2424,11 +2424,9 @@ public class APIStoreHostObject extends ScriptableObject {
     public static SubscriptionResponse jsFunction_addAPISubscription(Context cx, Scriptable thisObj,
                                                                      Object[] args, Function funObj)
             throws APIManagementException {
-    	log.info("//DONE+++++++++++jsFunction_addAPISubscription");
         if (!isStringArray(args)) {
             throw new APIManagementException("Invalid input parameters for AddAPISubscription method");
         }
-    	log.info("//DONE+++++++++++jsFunction_addAPISubscription");
 
         APIConsumer apiConsumer = getAPIConsumer(thisObj);
         SubscriptionResponse addSubscriptionResponse  = null;
@@ -3372,7 +3370,7 @@ public class APIStoreHostObject extends ScriptableObject {
             }
             
             //get the log line with deleted application details
-            String logEntry = "//DONE+++++Application Deleted by - " + username;
+            String logEntry = "Application Deleted by - " + username;
             logEntry += " | App Name - " + name;
         	log.info(logEntry);
         	
@@ -3474,7 +3472,7 @@ public class APIStoreHostObject extends ScriptableObject {
             apiConsumer.updateApplication(updatedApplication);
             
             //get the log line with updated details of the application
-            String logEntry = "//DONE+++++Application Updated by - " + username;
+            String logEntry = "Application Updated by - " + username;
             if (!newName.equals(oldName)) {
             	logEntry += " | App Name - " + oldName + " > " + newName;
             }
@@ -3581,7 +3579,7 @@ public class APIStoreHostObject extends ScriptableObject {
                     apiConsumer.updateApplication(app);
 
                     //get the log line with updated details of the application
-                    String logEntry = "//DONE+++++Application Updated by - " + username;
+                    String logEntry = "Application Updated by - " + username;
                     logEntry += " | App Name - " + name;
                     logEntry += " | Tier - " + oldTier + " > " + tier;
                 	log.info(logEntry);
@@ -4051,7 +4049,7 @@ public class APIStoreHostObject extends ScriptableObject {
             apiConsumer.removeSubscription(apiId, username, applicationId);
             
             //get the log line for removing subscription to the application
-            String logEntry = "//DONE+++++Subscription Removed by - " + username;
+            String logEntry = "Subscription Removed by - " + username;
             logEntry += " | App Id - " + applicationId;
             try {
                 Application application = apiConsumer.getApplicationById(applicationId);
